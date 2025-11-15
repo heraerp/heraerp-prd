@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { type Leader } from '@/data/about'
 
 interface LeaderCardProps {

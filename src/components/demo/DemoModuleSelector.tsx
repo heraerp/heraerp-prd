@@ -4,7 +4,7 @@ import { Card } from '@/components/ui/card'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase/client'
 import { useToast } from '@/hooks/use-toast'
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { Scissors, UtensilsCrossed, Users2, Armchair, ArrowRight, Sparkles } from 'lucide-react'
 
 interface DemoModule {

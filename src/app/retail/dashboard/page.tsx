@@ -10,6 +10,7 @@
  * Universal Component: /src/components/universal/dashboard/UniversalAppDashboard.tsx
  */
 
+import React from 'react'
 import { UniversalAppDashboard } from '@/components/universal/dashboard/UniversalAppDashboard'
 import { retailDashboardConfig } from '@/lib/config/apps/retail.config'
 

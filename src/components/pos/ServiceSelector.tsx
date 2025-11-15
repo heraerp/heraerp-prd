@@ -6,7 +6,7 @@
 
 'use client'
 
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { Search, Clock } from 'lucide-react'
 import { useCartStore } from '@/lib/hooks/usePos'
 import { ServicePrice } from '@/lib/schemas/pos'

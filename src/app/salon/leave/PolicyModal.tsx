@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { X, Settings, AlertCircle, Zap } from 'lucide-react'
 import { z } from 'zod'
 

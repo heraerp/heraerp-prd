@@ -3,6 +3,7 @@
 // Force dynamic rendering
 export const dynamic = 'force-dynamic'
 
+import React from 'react'
 import { HERADevelopmentDashboard } from '@/components/development/HERADevelopmentDashboard'
 export default function DevelopmentDashboardPage() {
   return (

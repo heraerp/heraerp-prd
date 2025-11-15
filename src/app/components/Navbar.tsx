@@ -1,8 +1,8 @@
 'use client'
 
+import React, { useEffect, useState, useRef } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useEffect, useRef, useState } from 'react'
 import ThemeToggle from '@/app/components/ThemeToggle'
 
 type NavItem = { href: string; label: string }

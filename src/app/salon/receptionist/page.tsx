@@ -13,7 +13,7 @@
  */
 'use client'
 
-import React, { useState, lazy, Suspense } from 'react'
+import React, { Suspense, lazy, useEffect, useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import {

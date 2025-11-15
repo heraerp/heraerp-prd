@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, lazy, Suspense, useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useSecuredSalonContext } from '../SecuredSalonProvider'
 import { useSalonSecurity } from '@/hooks/useSalonSecurity'

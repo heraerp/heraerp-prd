@@ -7,7 +7,7 @@
  * Tests actual POS checkout flow with performance monitoring
  */
 
-import { useState, useEffect, useCallback, useRef } from 'react'
+import React, { useState, useEffect, useCallback, useRef } from 'react'
 import {
   PlayCircle,
   StopCircle,

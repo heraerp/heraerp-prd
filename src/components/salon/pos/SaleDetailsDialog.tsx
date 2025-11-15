@@ -7,7 +7,7 @@
 
 'use client'
 
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useUniversalTransaction } from '@/hooks/useUniversalTransaction'
 import { getTransactions, getEntities } from '@/lib/universal-api-v2-client'
 import { SalonLuxeModal } from '@/components/salon/shared/SalonLuxeModal'

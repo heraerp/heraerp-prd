@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useMemo, useCallback, useRef, lazy, Suspense } from 'react'
+import React, { useState, useEffect, useMemo, useCallback, useRef, lazy, Suspense } from 'react'
 import { useSecuredSalonContext } from '@/app/salon/SecuredSalonProvider'
 import { SimpleSalonGuard } from '@/components/salon/auth/SimpleSalonGuard'
 import { usePosTicket } from '@/hooks/usePosTicket'

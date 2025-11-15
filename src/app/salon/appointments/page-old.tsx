@@ -6,7 +6,7 @@
 
 'use client'
 
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useSecuredSalonContext } from '@/app/salon/SecuredSalonProvider'
 import { useAppointmentsPlaybook } from '@/hooks/useAppointmentsPlaybook'

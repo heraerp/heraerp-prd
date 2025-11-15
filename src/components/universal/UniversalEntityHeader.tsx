@@ -8,7 +8,7 @@
  * field types, validation, and conditional logic for master data management
  */
 
-import React, { useState, useCallback, useMemo } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { 
   ChevronDown, 
   ChevronUp,

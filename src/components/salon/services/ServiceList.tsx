@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useMemo } from 'react'
 import { Service } from '@/types/salon-service'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'

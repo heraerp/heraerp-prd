@@ -1,5 +1,7 @@
 'use client'
 
+import React from 'react'
+
 import { ReactNode } from 'react'
 import { X, AlertCircle } from 'lucide-react'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'

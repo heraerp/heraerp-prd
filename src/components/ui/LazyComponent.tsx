@@ -5,6 +5,8 @@
 
 'use client'
 
+import React from 'react'
+
 import dynamic from 'next/dynamic'
 import { ComponentType, ReactNode } from 'react'
 import { LUXE_COLORS } from '@/lib/constants/salon'

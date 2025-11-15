@@ -1,6 +1,6 @@
 'use client'
+import React from 'react'
 import Link from 'next/link'
-import { forwardRef, AnchorHTMLAttributes } from 'react'
 type Props = AnchorHTMLAttributes<HTMLAnchorElement> & { href: string }
 export const NavigationLink = forwardRef<HTMLAnchorElement, Props>(
   ({ href, children, ...rest }, ref) => (

@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useState } from 'react'
+import React, { useState } from 'react'
 import * as Popover from '@radix-ui/react-popover'
 import { Bell, Diamond, Scale, Crown, Clock } from 'lucide-react'
 import { motion } from 'framer-motion'

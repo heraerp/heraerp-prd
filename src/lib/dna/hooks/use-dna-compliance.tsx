@@ -7,7 +7,7 @@
  * its own genetic integrity and provides real-time feedback.
  */
 
-import { useEffect, useState, useCallback, useRef } from 'react'
+import React, { useEffect, useState, useCallback, useRef } from 'react'
 import { heraDnaStandardization, HeraDnaValidationResult, HeraDnaViolation } from '../core/standardization-dna'
 import { dnaEnforcement } from '../middleware/dna-enforcement-middleware'
 

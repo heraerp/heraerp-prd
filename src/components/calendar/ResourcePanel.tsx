@@ -3,7 +3,7 @@
 // HERA Universal Resource Panel
 // Manages calendar resources across all industries
 
-import React, { useState, useMemo } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import {
   Sheet,
   SheetContent,

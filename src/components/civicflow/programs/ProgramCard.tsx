@@ -1,5 +1,6 @@
 'use client'
 
+import React from 'react'
 import { Calendar, DollarSign, Building2, Plus } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'

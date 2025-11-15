@@ -3,7 +3,7 @@
 // Force dynamic rendering
 // export const dynamic = 'force-dynamic';
 
-import { useState, useEffect } from 'react'
+import React from 'react'
 import { useRouter } from 'next/navigation'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'

@@ -6,6 +6,7 @@
 
 'use client'
 
+import React from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { ArrowLeft, FileText, Code } from 'lucide-react'
 import { Button } from '@/components/ui/button'

@@ -20,7 +20,7 @@
  * ```
  */
 
-import { useCallback, useEffect } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import { useSecuredSalonContext } from '@/app/salon/SecuredSalonProvider'
 
 export function usePosTransactionProtection() {

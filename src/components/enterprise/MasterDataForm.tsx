@@ -7,7 +7,7 @@
  * Main form component that orchestrates the entire master data entry experience
  */
 
-import React, { useState, useEffect } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { Save, Send, ArrowLeft, ArrowRight, AlertCircle, CheckCircle, X, Settings } from 'lucide-react'
 import { 
   MasterDataTemplate, 

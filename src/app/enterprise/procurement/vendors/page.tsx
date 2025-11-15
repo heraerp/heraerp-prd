@@ -6,7 +6,7 @@
 
 'use client'
 
-import React, { useState, useMemo } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { 
   Plus, Edit, Trash2, Search, Phone, Mail, Briefcase,

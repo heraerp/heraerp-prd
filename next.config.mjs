@@ -7,6 +7,11 @@ const __dirname = path.dirname(__filename)
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // 🔍 DEBUG: Enhanced error reporting for React issues
+  onDemandEntries: {
+    maxInactiveAge: 25 * 1000,
+    pagesBufferLength: 2,
+  },
   // Build Performance Optimizations
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production' ? {
@@ -145,6 +150,17 @@ const nextConfig = {
 
   // 🔧 Webpack optimizations and alias resolution
   webpack(config, { dev, isServer }) {
+    // 🔍 DEBUG: Enhanced error reporting in development
+    if (dev) {
+      config.stats = {
+        errorDetails: true,
+        errors: true,
+        warnings: true,
+        moduleTrace: true,
+        errorStack: true
+      }
+      config.devtool = 'eval-source-map'
+    }
     // Alias resolution
     config.resolve.alias = {
       ...(config.resolve.alias ?? {}),

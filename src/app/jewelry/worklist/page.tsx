@@ -1,5 +1,5 @@
 'use client'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 // Temporarily disable useList to fix missing import
 import { FilterBar } from '@/components/uikit/FilterBar'
 import { JewelryDataTable } from '@/components/jewelry/JewelryDataTable'

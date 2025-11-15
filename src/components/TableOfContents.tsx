@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 
 interface TOCProps {
   content: string

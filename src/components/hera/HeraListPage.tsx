@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Plus, Filter } from 'lucide-react'
 import { useHeraFilterStore, useHeraFilterSync } from '@/hooks/useHeraFilterStore'
 import { useUniversalEntity } from '@/hooks/useUniversalEntity'

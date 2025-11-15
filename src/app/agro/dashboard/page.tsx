@@ -1,3 +1,4 @@
+import React from 'react'
 /**
  * HERA Agro Dashboard - Wrapper Page
  * Smart Code: HERA.AGRO.DASHBOARD.v1

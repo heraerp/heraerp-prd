@@ -2,7 +2,7 @@
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { onOrgChange, offOrgChange } from '@/lib/api-client'
 import { registerRules } from '@/lib/universal/v2/hooks'
 import { jewelryRules } from '@/lib/jewelry/rulesPack'

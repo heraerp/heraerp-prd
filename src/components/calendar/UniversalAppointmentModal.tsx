@@ -1,5 +1,7 @@
 'use client'
 
+import React, { useEffect, useMemo, useState } from 'react'
+
 /**
  * HERA Universal Appointment Modal
  * Smart Code: HERA.UI.CALENDAR.MODAL.APPOINTMENT.UNIVERSAL.v1
@@ -19,7 +21,6 @@
  * - Smart Code automatic generation
  */
 
-import React, { useState, useEffect, useMemo } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'

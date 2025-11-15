@@ -1,3 +1,5 @@
+
+import React, { useMemo, useState } from 'react'
 /**
  * InvoicePaymentModal Component
  *
@@ -19,7 +21,6 @@
 
 'use client'
 
-import { useState, useMemo } from 'react'
 import { SALON_LUXE_COLORS } from '@/lib/constants/salon-luxe-colors'
 import { SalonLuxeModal } from '@/components/salon/shared/SalonLuxeModal'
 import { useHERAAuth } from '@/components/auth/HERAAuthProvider'

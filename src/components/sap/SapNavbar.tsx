@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
 import Link from 'next/link'
 import { Search, Settings, Bell, HelpCircle, ChevronLeft, ChevronDown } from 'lucide-react'
 

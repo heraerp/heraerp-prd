@@ -19,17 +19,53 @@ export async function GET(
   { params }: { params: { domain: string; section: string; workspace: string } }
 ) {
   const { domain, section, workspace } = await params
+  const url = new URL(request.url)
+  
+  // Security: Extract organization context from request
+  const organizationId = request.headers.get('x-organization-id') || 
+                        url.searchParams.get('organization_id') || 
+                        '00000000-0000-0000-0000-000000000000' // Default platform org
+  
+  const actorUserId = request.headers.get('x-actor-user-id') || 'system'
+  
+  console.log('🛡️ Security Context:', { domain, section, workspace, organizationId, actorUserId })
+  
+  // Check if requesting Universal Tile format
+  const useTileFormat = url.searchParams.get('format') === 'tiles' || 
+                       url.searchParams.get('tiles') === 'true' ||
+                       request.headers.get('x-tile-format') === 'true'
 
-  console.log(`🔍 Database-driven Workspace API:`, { domain, section, workspace })
+  console.log(`🔍 Database-driven Workspace API:`, { domain, section, workspace, useTileFormat })
 
   try {
-    const workspaceData = await getWorkspaceFromDatabase(domain, section, workspace)
+    // Validate organization boundary - CRITICAL SECURITY
+    if (!organizationId || organizationId === 'undefined' || organizationId === 'null') {
+      console.error('🛡️ Security Violation: Missing organization context')
+      return NextResponse.json(
+        { 
+          error: 'Organization context required',
+          code: 'MISSING_ORGANIZATION_CONTEXT',
+          timestamp: new Date().toISOString()
+        },
+        { status: 400 }
+      )
+    }
+    
+    const workspaceData = await getWorkspaceFromDatabase(domain, section, workspace, organizationId, actorUserId)
     
     if (!workspaceData) {
       return NextResponse.json(
         { error: `Workspace not found: ${domain}/${section}/${workspace}` },
         { status: 404 }
       )
+    }
+
+    // Transform to Universal Tile format if requested
+    if (useTileFormat) {
+      console.log(`🔄 Transforming to Universal Tile format`)
+      const tileData = await transformToUniversalTileFormat(workspaceData, domain, section, workspace)
+      console.log(`✅ Successfully transformed to Universal Tile format: ${domain}/${section}/${workspace}`)
+      return NextResponse.json(tileData)
     }
 
     console.log(`✅ Successfully loaded workspace from database: ${domain}/${section}/${workspace}`)
@@ -40,22 +76,34 @@ export async function GET(
       { 
         error: 'Failed to load workspace data from database',
         details: error instanceof Error ? error.message : 'Unknown error',
-        params: { domain, section, workspace }
+        params: { domain, section, workspace, useTileFormat }
       },
       { status: 500 }
     )
   }
 }
 
-async function getWorkspaceFromDatabase(domain: string, section: string, workspace: string) {
+async function getWorkspaceFromDatabase(
+  domain: string, 
+  section: string, 
+  workspace: string, 
+  organizationId: string,
+  actorUserId: string
+) {
   console.log('🔍 Step 1: Finding all APP_WORKSPACE entities...')
   
-  // Step 1: Get all APP_WORKSPACE entities and filter by matching patterns
+  // Step 1: Get all APP_WORKSPACE entities with organization boundary enforcement
+  console.log('🛡️ Enforcing organization boundary:', { organizationId, domain, section, workspace })
+  
+  // For demo/platform workspaces, use platform organization
+  const queryOrgId = organizationId === '00000000-0000-0000-0000-000000000000' ? 
+                    '00000000-0000-0000-0000-000000000000' : organizationId
+  
   const { data: allWorkspaces, error: workspacesError } = await supabase
     .from('core_entities')
     .select('*')
     .eq('entity_type', 'APP_WORKSPACE')
-    .eq('organization_id', '00000000-0000-0000-0000-000000000000')
+    .eq('organization_id', queryOrgId) // SACRED BOUNDARY ENFORCEMENT
 
   if (workspacesError) {
     console.log('❌ Error fetching workspaces:', workspacesError)
@@ -217,7 +265,16 @@ async function getWorkspaceFromDatabase(domain: string, section: string, workspa
     console.log(`🎉 Complete hierarchy verified: ${domainEntity.entity_name} → ${sectionEntity.entity_name} → ${workspaceEntity.entity_name}`)
 
     // We found a valid workspace! Now build the workspace configuration
-    return await buildWorkspaceConfiguration(workspaceEntity, sectionEntity, domainEntity, domain, section, workspace)
+    return await buildWorkspaceConfiguration(
+      workspaceEntity, 
+      sectionEntity, 
+      domainEntity, 
+      domain, 
+      section, 
+      workspace, 
+      organizationId, 
+      actorUserId
+    )
   }
 
   // No matching workspace found
@@ -225,7 +282,7 @@ async function getWorkspaceFromDatabase(domain: string, section: string, workspa
   return null
 }
 
-async function buildWorkspaceConfiguration(workspaceEntity: any, sectionEntity: any, domainEntity: any, domain: string, section: string, workspace: string) {
+async function buildWorkspaceConfiguration(workspaceEntity: any, sectionEntity: any, domainEntity: any, domain: string, section: string, workspace: string, organizationId: string, actorUserId: string) {
   console.log('🔍 Step 4: Building workspace configuration...')
 
   // Load workspace dynamic data
@@ -265,7 +322,25 @@ async function buildWorkspaceConfiguration(workspaceEntity: any, sectionEntity: 
         { code: 'relationships', label: 'Relationships' },
         { code: 'analytics', label: 'Analytics' }
       ],
-      sections: await generateDynamicWorkspaceSections(domain, section, workspace, workspaceEntity, sectionEntity, domainEntity, dynamicData)
+      sections: await generateDynamicWorkspaceSections(
+        domain, 
+        section, 
+        workspace, 
+        workspaceEntity, 
+        sectionEntity, 
+        domainEntity, 
+        dynamicData, 
+        organizationId, 
+        actorUserId
+      )
+    },
+    // Security metadata
+    security: {
+      organizationId,
+      actorUserId,
+      accessLevel: 'full', // TODO: Implement role-based access levels
+      auditRequired: true,
+      sessionTimestamp: new Date().toISOString()
     }
   }
 
@@ -280,7 +355,9 @@ async function generateDynamicWorkspaceSections(
   workspaceEntity: any,
   sectionEntity: any,
   domainEntity: any,
-  dynamicData: any[]
+  dynamicData: any[],
+  organizationId: string,
+  actorUserId: string
 ) {
   // Generate sections based on workspace metadata and dynamic data
   const sections = []
@@ -459,8 +536,84 @@ function generateRelationshipCards(domain: string, section: string, workspace: s
 }
 
 function generateAnalyticsCards(domain: string, section: string, workspace: string) {
-  return [
-    {
+  const cards = []
+  
+  // Check if this is a financial analytics workspace
+  if (section.toLowerCase().includes('fin') || section.toLowerCase().includes('accounting') || section.toLowerCase().includes('analytics')) {
+    // Add specialized financial analytics tiles
+    cards.push(
+      {
+        label: 'Revenue Dashboard',
+        description: 'Comprehensive revenue breakdown and trend analysis',
+        icon: 'DollarSign',
+        color: 'green',
+        target_type: 'analytics',
+        template_code: 'revenue-dashboard',
+        view_slug: 'revenue-dashboard',
+        entity_type: 'REVENUE_ANALYTICS',
+        status: 'active',
+        priority: 'high',
+        tileComponent: 'RevenueDashboardTile',
+        smartCode: 'HERA.FINANCE.ANALYTICS.TILE.REVENUE.DASHBOARD.v1',
+        interactiveFeatures: {
+          drillDown: true,
+          export: true,
+          comparison: true
+        },
+        gridSize: { width: 2, height: 2 }
+      },
+      {
+        label: 'Financial KPIs',
+        description: 'Key performance indicators with target tracking',
+        icon: 'Target',
+        color: 'blue',
+        target_type: 'analytics',
+        template_code: 'financial-kpi',
+        view_slug: 'financial-kpi',
+        entity_type: 'FINANCIAL_KPI',
+        status: 'active',
+        priority: 'high',
+        tileComponent: 'FinancialKPITile',
+        smartCode: 'HERA.FINANCE.ANALYTICS.TILE.KPI.DASHBOARD.v1',
+        interactiveFeatures: {
+          drillDown: true,
+          export: true,
+          comparison: true,
+          targetSetting: true
+        },
+        gridSize: { width: 1, height: 1 },
+        variants: [
+          { kpiType: 'profit_margin', title: 'Profit Margin' },
+          { kpiType: 'roe', title: 'Return on Equity' },
+          { kpiType: 'current_ratio', title: 'Current Ratio' },
+          { kpiType: 'debt_equity', title: 'Debt-to-Equity' }
+        ]
+      },
+      {
+        label: 'Cash Flow Analysis',
+        description: 'Operating, investing, and financing cash flows',
+        icon: 'Coins',
+        color: 'purple',
+        target_type: 'analytics',
+        template_code: 'cash-flow',
+        view_slug: 'cash-flow',
+        entity_type: 'CASH_FLOW_ANALYTICS',
+        status: 'active',
+        priority: 'high',
+        tileComponent: 'CashFlowTile',
+        smartCode: 'HERA.FINANCE.ANALYTICS.TILE.CASHFLOW.OVERVIEW.v1',
+        interactiveFeatures: {
+          drillDown: true,
+          export: true,
+          comparison: true,
+          forecasting: true
+        },
+        gridSize: { width: 2, height: 2 }
+      }
+    )
+  } else {
+    // Default analytics card for other sections
+    cards.push({
       label: 'Reports & Analytics',
       description: `${section.charAt(0).toUpperCase() + section.slice(1)} analytics and reporting`,
       icon: 'BarChart3',
@@ -470,6 +623,285 @@ function generateAnalyticsCards(domain: string, section: string, workspace: stri
       view_slug: 'analytics',
       status: 'active',
       priority: 'low'
+    })
+  }
+  
+  return cards
+}
+
+/**
+ * Transform workspace data to Universal Tile format
+ * Converts existing card-based data to ResolvedTileConfig format
+ */
+async function transformToUniversalTileFormat(workspaceData: any, domain: string, section: string, workspace: string) {
+  console.log('🔄 Step 1: Transforming cards to Universal Tile format...')
+  
+  const { workspace: workspaceInfo, layout_config } = workspaceData
+  const tiles: any[] = []
+  let tilePosition = 0
+  
+  // Transform each section's cards to tiles
+  for (const sectionConfig of layout_config.sections) {
+    for (const card of sectionConfig.cards) {
+      const tile = await transformCardToTile(card, sectionConfig, workspaceInfo, domain, section, workspace, tilePosition)
+      tiles.push(tile)
+      tilePosition++
+    }
+  }
+  
+  console.log(`✅ Transformed ${tiles.length} cards to tiles`)
+  
+  return {
+    success: true,
+    data: {
+      workspace: {
+        id: workspaceInfo.id,
+        name: workspaceInfo.entity_name,
+        description: workspaceInfo.subtitle,
+        organization_id: '00000000-0000-0000-0000-000000000000', // Platform org for demo
+        layout: {
+          type: 'grid',
+          columns: 4,
+          rows: 8,
+          gap: 16
+        },
+        settings: {
+          autoRefresh: false,
+          refreshInterval: 300000, // 5 minutes
+          showGrid: true
+        }
+      },
+      tiles: tiles,
+      navigation: {
+        sections: layout_config.nav_items.map((item: any) => ({
+          code: item.code,
+          label: item.label,
+          tileIds: tiles
+            .filter(tile => tile.metadata.sectionCode === item.code)
+            .map(tile => tile.id)
+        }))
+      },
+      metadata: {
+        totalTiles: tiles.length,
+        format: 'universal_tiles',
+        version: '1.0',
+        generatedAt: new Date().toISOString(),
+        source: 'workspace_transformation'
+      }
+    }
+  }
+}
+
+/**
+ * Transform individual card to Universal Tile format
+ */
+async function transformCardToTile(card: any, sectionConfig: any, workspaceInfo: any, domain: string, section: string, workspace: string, position: number) {
+  // Use existing smart code or generate new one following HERA DNA patterns
+  const smartCode = card.smartCode || generateSmartCode(domain, section, card.target_type, card.view_slug)
+  
+  // Calculate grid position (4 columns) - use card's grid size if available
+  const cardGridSize = card.gridSize || { width: 1, height: 1 }
+  const gridPosition = {
+    x: position % 4,
+    y: Math.floor(position / 4),
+    width: cardGridSize.width,
+    height: cardGridSize.height
+  }
+  
+  // Create resolved tile config
+  const tileConfig = {
+    id: `tile_${domain}_${section}_${card.view_slug}_${position}`,
+    templateId: `template_${card.template_code || card.target_type}`,
+    workspaceId: workspaceInfo.id,
+    userId: 'system',
+    organizationId: '00000000-0000-0000-0000-000000000000',
+    position: gridPosition,
+    
+    // Base configuration
+    type: determineTileType(card),
+    title: card.label,
+    subtitle: card.description || card.subtitle || '',
+    icon: card.icon || 'Package',
+    color: card.color || 'blue',
+    size: 'medium',
+    
+    // Enhanced tile configuration for financial tiles
+    tileComponent: card.tileComponent || null,
+    interactiveFeatures: card.interactiveFeatures || {
+      drillDown: false,
+      export: false,
+      comparison: false
+    },
+    variants: card.variants || [],
+    
+    // Data source configuration
+    dataSource: {
+      type: 'rpc',
+      endpoint: `get_${card.target_type}_stats`,
+      params: {
+        entity_type: card.entity_type || card.target_type?.toUpperCase(),
+        view_slug: card.view_slug,
+        domain,
+        section,
+        workspace
+      },
+      cacheTimeout: 300000,
+      refreshInterval: 60000
+    },
+    
+    // Actions configuration
+    actions: generateTileActions(card, domain, section, workspace),
+    
+    // Permissions
+    permissions: {
+      view: ['viewer', 'editor', 'admin'],
+      edit: ['editor', 'admin'],
+      execute_actions: ['editor', 'admin']
+    },
+    
+    // Resolved data
+    resolved: {
+      dataSource: {
+        type: 'rpc',
+        endpoint: `get_${card.target_type}_stats`,
+        resolved: true
+      },
+      actions: generateTileActions(card, domain, section, workspace),
+      permissions: {
+        canView: true,
+        canEdit: true,
+        canExecuteActions: true,
+        availableActions: generateTileActions(card, domain, section, workspace).map((a: any) => a.id)
+      },
+      conditions: []
+    },
+    
+    // Metadata
+    metadata: {
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      createdBy: 'system',
+      updatedBy: 'system',
+      version: 1,
+      smartCode: smartCode,
+      sectionCode: sectionConfig.nav_code,
+      sectionTitle: sectionConfig.title,
+      originalCard: card,
+      isFinancialTile: !!card.tileComponent,
+      category: card.category || 'general',
+      hasInteractiveFeatures: !!(card.interactiveFeatures && Object.values(card.interactiveFeatures).some(feature => feature === true))
+    }
+  }
+  
+  return tileConfig
+}
+
+/**
+ * Generate HERA DNA smart code for tiles
+ */
+function generateSmartCode(domain: string, section: string, targetType: string, viewSlug: string): string {
+  const domainCode = domain.toUpperCase()
+  const sectionCode = section.toUpperCase() 
+  const typeCode = targetType?.toUpperCase() || 'GENERAL'
+  const subCode = viewSlug?.toUpperCase() || 'DEFAULT'
+  
+  return `HERA.${domainCode}.${sectionCode}.TILE.${typeCode}.${subCode}.v1`
+}
+
+/**
+ * Determine tile type based on card properties
+ */
+function determineTileType(card: any): string {
+  if (card.metrics) return 'stat'
+  if (card.target_type === 'analytics') return 'chart'
+  if (card.target_type === 'workflow') return 'action'
+  if (card.target_type === 'entities' || card.target_type === 'transactions') return 'list'
+  return 'custom'
+}
+
+/**
+ * Generate tile actions based on card properties
+ */
+function generateTileActions(card: any, domain: string, section: string, workspace: string) {
+  const actions = [
+    {
+      id: 'refresh',
+      label: 'Refresh',
+      icon: 'RefreshCw',
+      type: 'button',
+      variant: 'secondary',
+      endpoint: 'refresh',
+      permissions: ['viewer', 'editor', 'admin']
+    },
+    {
+      id: 'view_details',
+      label: 'View Details',
+      icon: 'ExternalLink',
+      type: 'link',
+      variant: 'primary',
+      endpoint: generateCardRoute(card, domain, section, workspace),
+      permissions: ['viewer', 'editor', 'admin']
     }
   ]
+  
+  // Add card-specific actions
+  if (card.quickActions) {
+    for (const quickAction of card.quickActions) {
+      actions.push({
+        id: quickAction.action || quickAction.label.toLowerCase().replace(/\s+/g, '_'),
+        label: quickAction.label,
+        icon: quickAction.icon || 'Zap',
+        type: 'button',
+        variant: 'secondary',
+        endpoint: quickAction.action,
+        permissions: ['editor', 'admin']
+      })
+    }
+  }
+  
+  // Add export action for analytics
+  if (card.target_type === 'analytics' || card.target_type === 'transactions') {
+    actions.push({
+      id: 'export',
+      label: 'Export',
+      icon: 'Download',
+      type: 'button',
+      variant: 'secondary',
+      confirmationRequired: false,
+      endpoint: 'export',
+      permissions: ['editor', 'admin']
+    })
+  }
+  
+  return actions
+}
+
+/**
+ * Generate route for card navigation
+ */
+function generateCardRoute(card: any, domain: string, section: string, workspace: string): string {
+  switch (card.target_type) {
+    case 'entity':
+    case 'entities':
+      const entityType = card.entity_type || card.view_slug
+      return `/${domain}/${section}/${workspace}/entities/${entityType}`
+    case 'transaction':
+    case 'transactions':
+      const transactionType = card.view_slug.includes('transaction') ? 
+        card.view_slug.replace('-transaction', '') : card.view_slug
+      return `/${domain}/${section}/${workspace}/transactions/${transactionType}`
+    case 'workflow':
+    case 'workflows':
+      return `/${domain}/${section}/${workspace}/workflows/${card.view_slug}`
+    case 'relationship':
+    case 'relationships':
+      return `/${domain}/${section}/${workspace}/relationships/${card.view_slug}`
+    case 'analytics':
+      return `/${domain}/${section}/${workspace}/analytics/${card.view_slug}`
+    case 'report':
+    case 'reports':
+      return `/${domain}/${section}/${workspace}/reports/${card.view_slug}`
+    default:
+      return `/${domain}/${section}/${workspace}/${card.view_slug}`
+  }
 }

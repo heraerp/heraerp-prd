@@ -6,10 +6,10 @@
 
 'use client'
 
+import React, { useEffect, useState } from 'react'
 import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { useRouter } from 'next/navigation'
 import { Building2, ChevronDown } from 'lucide-react'
-import { useState, useRef, useEffect } from 'react'
 
 export function OrganizationSwitcher() {
   const { organizations, organization, switchOrganization, availableApps } = useHERAAuth()

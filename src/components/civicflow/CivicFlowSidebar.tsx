@@ -1,5 +1,6 @@
 'use client'
 
+import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import {
@@ -28,7 +29,6 @@ import {
   Search,
   BookOpen
 } from 'lucide-react'
-import { useState, useEffect } from 'react'
 import { cn } from '@/lib/utils'
 import { supabase } from '@/lib/supabase/client'
 import { MoreAppsModal } from './MoreAppsModal'

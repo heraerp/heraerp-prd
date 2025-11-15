@@ -1,7 +1,7 @@
 'use client'
 
 // src/ui/HeraProvider.tsx
-import React, { createContext, useContext, useMemo } from 'react'
+import React, { createContext, useContext, useMemo, useState } from 'react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
 type HeraContextValue = {

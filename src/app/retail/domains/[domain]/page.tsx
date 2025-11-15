@@ -10,7 +10,7 @@
  * Universal Component: /src/components/universal/domain/UniversalDomainPage.tsx
  */
 
-import { use } from 'react'
+import React, { use } from 'react'
 import { UniversalDomainPage } from '@/components/universal/domain/UniversalDomainPage'
 import { retailDomainConfig } from '@/lib/config/apps/retail-domain.config'
 

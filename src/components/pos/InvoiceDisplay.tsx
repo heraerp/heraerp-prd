@@ -6,7 +6,7 @@
 
 'use client'
 
-import { useRef } from 'react'
+import React from 'react'
 import { Printer, Download, Mail, Home, Calendar } from 'lucide-react'
 import { Invoice } from '@/lib/schemas/pos'
 import { Button } from '@/components/ui/button'

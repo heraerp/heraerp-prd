@@ -1,5 +1,6 @@
 'use client'
 
+import React from 'react'
 import { EntityPage } from '@/components/entity/EntityPage'
 import { PRODUCT_PRESET } from '@/hooks/entityPresets'
 import { useHERAAuth } from '@/components/auth/HERAAuthProvider'

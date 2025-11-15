@@ -4,6 +4,7 @@
 
 'use client'
 
+import React from 'react'
 import { Separator } from '@/components/ui/separator'
 import { IndianRupee, Scale, Sparkles } from 'lucide-react'
 

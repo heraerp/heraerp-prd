@@ -1,5 +1,6 @@
 'use client'
 
+import React from 'react'
 import { useMousePosition } from '@/hooks/useMousePosition'
 import { HERA_THEME_COLORS, withOpacity } from '@/lib/constants/hera-theme-colors'
 

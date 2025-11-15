@@ -1,5 +1,6 @@
 'use client'
 
+import React from 'react'
 import { format, isToday, isTomorrow, isPast, differenceInDays } from 'date-fns'
 import { CalendarItem } from '@/types/calendar'
 import { Badge } from '@/components/ui/badge'

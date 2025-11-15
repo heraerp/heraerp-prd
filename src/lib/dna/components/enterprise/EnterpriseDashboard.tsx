@@ -5,7 +5,7 @@
 
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
 import { cn } from '@/lib/utils'
 import { motion, AnimatePresence } from 'framer-motion'
 import { EnterpriseCard } from './EnterpriseCard'

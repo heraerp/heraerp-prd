@@ -1,5 +1,6 @@
 'use client'
 
+import React from 'react'
 import { Bell, Download, Calculator, RefreshCw } from 'lucide-react'
 import { SALON_LUXE_COLORS } from '@/lib/constants/salon-luxe-colors'
 

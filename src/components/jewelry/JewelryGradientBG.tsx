@@ -1,5 +1,7 @@
 'use client'
 
+
+import React from 'react'
 export function JewelryGradientBG() {
   return (
     <div className="fixed inset-0 -z-10 overflow-hidden">

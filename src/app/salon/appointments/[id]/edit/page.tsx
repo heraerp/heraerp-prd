@@ -6,7 +6,7 @@
 // Edit existing appointment details
 // ================================================================================
 
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { universalApi } from '@/lib/universal-api-v2'

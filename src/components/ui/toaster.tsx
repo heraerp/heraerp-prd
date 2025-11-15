@@ -1,7 +1,7 @@
 'use client'
 
+import React, { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
-import { useEffect, useState } from 'react'
 import { usePathname } from 'next/navigation'
 import { useToast } from './use-toast'
 import { cn } from '@/lib/utils'
