@@ -1,5 +1,6 @@
-
 'use client'
+
+import React, { useMemo, useState } from 'react'
 
 /**
  * InvoicePaymentModal Component
@@ -20,8 +21,6 @@
  * - UPPERCASE transaction types
  */
 
-import React, { useMemo, useState } from 'react'
-
 import { SALON_LUXE_COLORS } from '@/lib/constants/salon-luxe-colors'
 import { SalonLuxeModal } from '@/components/salon/shared/SalonLuxeModal'
 import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
@@ -30,362 +29,402 @@ import { INVOICE_PAYMENT_METHOD_TO_GL, INVOICE_GL_ACCOUNTS } from '@/lib/finance
 import { CreditCard, DollarSign, Building2, Receipt, Eye, EyeOff, Calendar, CheckCircle } from 'lucide-react'
 
 interface InvoicePaymentModalProps {
+  invoiceId: string
   isOpen: boolean
   onClose: () => void
-  onSuccess?: () => void
-  invoice: {
-    invoice_id: string
-    invoice_number: string
-    customer_entity_id: string
-    customer_name: string
-    total_amount: number
-    amount_paid: number
-    amount_outstanding: number
-  }
+  onPaymentRecorded?: () => void
 }
 
-type PaymentMethod = 'CASH' | 'BANK_TRANSFER' | 'CARD' | 'CHEQUE'
-
 export function InvoicePaymentModal({
+  invoiceId,
   isOpen,
   onClose,
-  onSuccess,
-  invoice
+  onPaymentRecorded
 }: InvoicePaymentModalProps) {
   const { user, organization } = useHERAAuth()
-  const { recordPayment } = useHeraInvoice({ organizationId: organization?.id })
+  const { 
+    invoice, 
+    isLoading: invoiceLoading,
+    recordPayment,
+    isRecordingPayment 
+  } = useHeraInvoice(invoiceId)
 
-  // Form state
-  const [paymentAmount, setPaymentAmount] = useState<string>(
-    invoice.amount_outstanding.toFixed(2)
-  )
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('BANK_TRANSFER')
-  const [paymentDate, setPaymentDate] = useState(
-    new Date().toISOString().split('T')[0]
-  )
-  const [notes, setNotes] = useState('')
+  // ============================================================================
+  // STATE
+  // ============================================================================
+
+  const [paymentAmount, setPaymentAmount] = useState<string>('')
+  const [paymentMethod, setPaymentMethod] = useState<'cash' | 'card' | 'bank_transfer'>('cash')
+  const [paymentNotes, setPaymentNotes] = useState('')
   const [showGLPreview, setShowGLPreview] = useState(false)
 
-  // Loading state
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  // ============================================================================
+  // COMPUTED VALUES
+  // ============================================================================
 
-  // Parse payment amount
-  const parsedPaymentAmount = useMemo(() => {
-    return parseFloat(paymentAmount) || 0
-  }, [paymentAmount])
+  const outstandingBalance = useMemo(() => {
+    if (!invoice) return 0
+    const totalInvoiced = invoice.invoice_total || 0
+    const totalPaid = invoice.total_payments || 0
+    return Math.max(0, totalInvoiced - totalPaid)
+  }, [invoice])
 
-  // Validate form
-  const isValid = useMemo(() => {
-    return (
-      parsedPaymentAmount > 0 &&
-      parsedPaymentAmount <= invoice.amount_outstanding
-    )
-  }, [parsedPaymentAmount, invoice.amount_outstanding])
+  const paymentAmountNumber = useMemo(() => {
+    const amount = parseFloat(paymentAmount) || 0
+    return Math.min(amount, outstandingBalance) // Cannot pay more than outstanding
+  }, [paymentAmount, outstandingBalance])
 
-  // Calculate new balance
-  const newBalance = invoice.amount_outstanding - parsedPaymentAmount
+  const newOutstandingBalance = useMemo(() => {
+    return Math.max(0, outstandingBalance - paymentAmountNumber)
+  }, [outstandingBalance, paymentAmountNumber])
 
-  // Get payment method icon
-  const getPaymentMethodIcon = (method: PaymentMethod) => {
-    switch (method) {
-      case 'CASH':
-        return <DollarSign className="w-5 h-5" />
-      case 'BANK_TRANSFER':
-        return <Building2 className="w-5 h-5" />
-      case 'CARD':
-        return <CreditCard className="w-5 h-5" />
-      case 'CHEQUE':
-        return <Receipt className="w-5 h-5" />
-    }
-  }
+  // GL Preview
+  const glEntries = useMemo(() => {
+    if (!paymentAmountNumber || !invoice) return []
 
-  // Get payment method label
-  const getPaymentMethodLabel = (method: PaymentMethod) => {
-    switch (method) {
-      case 'CASH':
-        return 'Cash'
-      case 'BANK_TRANSFER':
-        return 'Bank Transfer'
-      case 'CARD':
-        return 'Card Payment'
-      case 'CHEQUE':
-        return 'Cheque'
-    }
-  }
-
-  // GL Preview Lines
-  const glPreviewLines = useMemo(() => {
-    if (parsedPaymentAmount === 0) return []
-
-    const cashAccountCode = INVOICE_PAYMENT_METHOD_TO_GL[paymentMethod]
-    const cashAccount = INVOICE_GL_ACCOUNTS[cashAccountCode]
-
+    const glMapping = INVOICE_PAYMENT_METHOD_TO_GL[paymentMethod]
+    
     return [
       {
-        account: `${cashAccountCode} - ${cashAccount?.name}`,
-        side: 'DR' as const,
-        amount: parsedPaymentAmount
+        account: glMapping.debit_account,
+        account_name: INVOICE_GL_ACCOUNTS[glMapping.debit_account],
+        debit: paymentAmountNumber,
+        credit: 0,
+        description: `Payment received for Invoice ${invoice.invoice_number}`
       },
       {
-        account: '120000 - Accounts Receivable',
-        side: 'CR' as const,
-        amount: parsedPaymentAmount
+        account: glMapping.credit_account,
+        account_name: INVOICE_GL_ACCOUNTS[glMapping.credit_account],
+        debit: 0,
+        credit: paymentAmountNumber,
+        description: `Payment received for Invoice ${invoice.invoice_number}`
       }
     ]
-  }, [parsedPaymentAmount, paymentMethod])
+  }, [paymentAmountNumber, paymentMethod, invoice])
 
-  // Handle submit
-  const handleSubmit = async () => {
-    if (!isValid || !user || !organization) return
+  // ============================================================================
+  // HANDLERS
+  // ============================================================================
 
-    setIsSubmitting(true)
-
-    try {
-      const input: RecordInvoicePaymentInput = {
-        organizationId: organization.id,
-        actorUserId: user.entity_id || user.id,
-        invoiceTransactionId: invoice.invoice_id,
-        invoiceNumber: invoice.invoice_number,
-        customerEntityId: invoice.customer_entity_id,
-        paymentAmount: parsedPaymentAmount,
-        paymentMethod,
-        paymentDate,
-        notes
-      }
-
-      await recordPayment(input)
-
-      // Success!
-      onSuccess?.()
-      handleReset()
-    } catch (error) {
-      console.error('Failed to record payment:', error)
-      alert('Failed to record payment. Please try again.')
-    } finally {
-      setIsSubmitting(false)
+  const handlePaymentAmountChange = (value: string) => {
+    // Only allow valid decimal numbers
+    const sanitized = value.replace(/[^0-9.]/g, '')
+    if (sanitized.split('.').length <= 2) {
+      setPaymentAmount(sanitized)
     }
   }
 
-  // Reset form
-  const handleReset = () => {
-    setPaymentAmount(invoice.amount_outstanding.toFixed(2))
-    setPaymentMethod('BANK_TRANSFER')
-    setPaymentDate(new Date().toISOString().split('T')[0])
-    setNotes('')
-    setShowGLPreview(false)
+  const handleRecordPayment = async () => {
+    if (!paymentAmountNumber || !user || !organization || !invoice) {
+      return
+    }
+
+    try {
+      const paymentData: RecordInvoicePaymentInput = {
+        invoice_id: invoiceId,
+        amount: paymentAmountNumber,
+        payment_method: paymentMethod,
+        payment_notes: paymentNotes.trim() || undefined,
+        organization_id: organization.id,
+        actor_user_id: user.entity_id || user.id
+      }
+
+      await recordPayment(paymentData)
+      
+      // Success - close modal and notify parent
+      onClose()
+      onPaymentRecorded?.()
+      
+      // Reset form
+      setPaymentAmount('')
+      setPaymentNotes('')
+      setShowGLPreview(false)
+    } catch (error) {
+      console.error('Failed to record payment:', error)
+      // Error handling is done in the hook with toast
+    }
   }
 
-  return (
-    <SalonLuxeModal
-      isOpen={isOpen}
-      onClose={onClose}
-      title="Record Payment"
-      maxWidth="2xl"
-    >
-      <div className="space-y-6">
-        {/* Header with icon */}
-        <div className="flex items-center gap-3 pb-4 border-b border-gold/20">
-          <div className="w-12 h-12 rounded-xl bg-green-500/20 flex items-center justify-center">
-            <CheckCircle className="w-6 h-6 text-green-400" />
-          </div>
-          <div>
-            <h2 className="text-xl font-bold text-champagne">Record Payment</h2>
-            <p className="text-sm text-bronze">Invoice {invoice.invoice_number}</p>
-          </div>
+  const handleClose = () => {
+    setPaymentAmount('')
+    setPaymentNotes('')
+    setShowGLPreview(false)
+    onClose()
+  }
+
+  // ============================================================================
+  // LOADING & ERROR STATES
+  // ============================================================================
+
+  if (invoiceLoading) {
+    return (
+      <SalonLuxeModal isOpen={isOpen} onClose={onClose} size="md">
+        <div className="p-8 flex items-center justify-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-2 border-gold border-t-transparent" />
+          <span className="ml-3 text-champagne">Loading invoice...</span>
         </div>
+      </SalonLuxeModal>
+    )
+  }
 
-        {/* Invoice Summary */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-charcoal/30 rounded-lg border border-gold/10">
-          <div>
-            <div className="text-xs text-bronze uppercase tracking-wider mb-1">Customer</div>
-            <div className="text-sm font-semibold text-champagne">{invoice.customer_name}</div>
-          </div>
-          <div>
-            <div className="text-xs text-bronze uppercase tracking-wider mb-1">Total Amount</div>
-            <div className="text-sm font-semibold text-champagne">
-              AED {invoice.total_amount.toLocaleString(undefined, { minimumFractionDigits: 2 })}
-            </div>
-          </div>
-          <div>
-            <div className="text-xs text-bronze uppercase tracking-wider mb-1">Outstanding</div>
-            <div className="text-sm font-semibold text-orange-400">
-              AED {invoice.amount_outstanding.toLocaleString(undefined, { minimumFractionDigits: 2 })}
-            </div>
-          </div>
-        </div>
-
-        {/* Payment Amount */}
-        <div>
-          <label className="block text-sm font-medium text-bronze mb-2">
-            Payment Amount (AED) *
-          </label>
-          <div className="relative">
-            <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-bronze" />
-            <input
-              type="number"
-              value={paymentAmount}
-              onChange={(e) => setPaymentAmount(e.target.value)}
-              placeholder="0.00"
-              min="0"
-              max={invoice.amount_outstanding}
-              step="0.01"
-              className="w-full min-h-[52px] pl-12 pr-4 bg-charcoal border-2 border-gold/20 rounded-lg text-champagne text-lg font-semibold placeholder-bronze/50 focus:outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold/50"
-            />
-          </div>
-          {parsedPaymentAmount > invoice.amount_outstanding && (
-            <p className="text-xs text-red-400 mt-1">
-              Payment amount cannot exceed outstanding balance
-            </p>
-          )}
-        </div>
-
-        {/* Payment Method */}
-        <div>
-          <label className="block text-sm font-medium text-bronze mb-3">
-            Payment Method *
-          </label>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            {(['CASH', 'BANK_TRANSFER', 'CARD', 'CHEQUE'] as PaymentMethod[]).map((method) => (
-              <button
-                key={method}
-                onClick={() => setPaymentMethod(method)}
-                className={`min-h-[60px] flex flex-col items-center justify-center gap-2 p-3 rounded-xl border-2 transition-all active:scale-95 ${
-                  paymentMethod === method
-                    ? 'border-gold bg-gold/10 text-gold'
-                    : 'border-gold/20 bg-charcoal/50 text-bronze hover:border-gold/40 hover:bg-charcoal'
-                }`}
-              >
-                {getPaymentMethodIcon(method)}
-                <span className="text-xs font-medium">
-                  {getPaymentMethodLabel(method)}
-                </span>
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Payment Date */}
-        <div>
-          <label className="block text-sm font-medium text-bronze mb-2">
-            Payment Date *
-          </label>
-          <div className="relative">
-            <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-bronze" />
-            <input
-              type="date"
-              value={paymentDate}
-              onChange={(e) => setPaymentDate(e.target.value)}
-              className="w-full min-h-[44px] pl-10 pr-4 bg-charcoal border border-gold/20 rounded-lg text-champagne focus:outline-none focus:ring-2 focus:ring-gold/50"
-            />
-          </div>
-        </div>
-
-        {/* New Balance Summary */}
-        <div className="bg-gradient-to-br from-green-500/20 to-blue-500/10 rounded-xl p-6 border border-green-500/30">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-bold text-champagne">After Payment</h3>
-            <span className="text-3xl font-bold text-green-400">
-              AED {newBalance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-            </span>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4 text-sm">
-            <div>
-              <span className="text-bronze">Payment Amount:</span>
-              <span className="ml-2 text-champagne font-medium">
-                AED {parsedPaymentAmount.toLocaleString(undefined, { minimumFractionDigits: 2 })}
-              </span>
-            </div>
-            <div>
-              <span className="text-bronze">Remaining Balance:</span>
-              <span className="ml-2 text-champagne font-medium">
-                AED {newBalance.toLocaleString(undefined, { minimumFractionDigits: 2 })}
-              </span>
-            </div>
-          </div>
-
-          {newBalance <= 0.01 && (
-            <div className="mt-3 flex items-center gap-2 text-green-400 text-sm font-semibold">
-              <CheckCircle className="w-4 h-4" />
-              <span>Invoice will be marked as PAID</span>
-            </div>
-          )}
-        </div>
-
-        {/* GL Preview Toggle */}
-        <button
-          onClick={() => setShowGLPreview(!showGLPreview)}
-          className="w-full flex items-center justify-between px-4 py-3 bg-charcoal/50 rounded-lg border border-gold/20 hover:bg-charcoal transition-colors active:scale-[0.99]"
-        >
-          <span className="text-sm font-medium text-champagne">GL Entries Preview</span>
-          {showGLPreview ? (
-            <EyeOff className="w-4 h-4 text-bronze" />
-          ) : (
-            <Eye className="w-4 h-4 text-bronze" />
-          )}
-        </button>
-
-        {/* GL Preview */}
-        {showGLPreview && (
-          <div className="space-y-2 p-4 bg-charcoal/30 rounded-lg border border-gold/10">
-            <div className="text-xs font-semibold text-bronze uppercase tracking-wider mb-3">
-              Double-Entry GL Lines
-            </div>
-            {glPreviewLines.map((line, index) => (
-              <div
-                key={index}
-                className="flex items-center justify-between py-2 px-3 bg-charcoal/50 rounded"
-              >
-                <span className="text-sm text-champagne">{line.account}</span>
-                <div className="flex items-center gap-4">
-                  <span
-                    className={`text-xs font-semibold px-2 py-1 rounded ${
-                      line.side === 'DR' ? 'bg-blue-500/20 text-blue-400' : 'bg-green-500/20 text-green-400'
-                    }`}
-                  >
-                    {line.side}
-                  </span>
-                  <span className="text-sm font-mono text-champagne w-32 text-right">
-                    {line.amount.toFixed(2)}
-                  </span>
-                </div>
-              </div>
-            ))}
-            <div className="pt-2 border-t border-gold/10 text-xs text-bronze">
-              ✓ Balanced: DR = CR = {parsedPaymentAmount.toFixed(2)}
-            </div>
-          </div>
-        )}
-
-        {/* Notes */}
-        <div>
-          <label className="block text-sm font-medium text-bronze mb-2">
-            Notes (Optional)
-          </label>
-          <textarea
-            value={notes}
-            onChange={(e) => setNotes(e.target.value)}
-            placeholder="Add any payment notes..."
-            rows={2}
-            className="w-full px-4 py-3 bg-charcoal border border-gold/20 rounded-lg text-champagne placeholder-bronze/50 focus:outline-none focus:ring-2 focus:ring-gold/50 resize-none"
-          />
-        </div>
-
-        {/* Action Buttons */}
-        <div className="flex flex-col-reverse md:flex-row gap-3 pt-4 border-t border-gold/20">
+  if (!invoice) {
+    return (
+      <SalonLuxeModal isOpen={isOpen} onClose={onClose} size="md">
+        <div className="p-8 text-center">
+          <Receipt className="w-16 h-16 mx-auto mb-4" style={{ color: SALON_LUXE_COLORS.bronze }} />
+          <h3 className="text-lg font-semibold text-champagne mb-2">Invoice Not Found</h3>
+          <p className="text-bronze mb-6">Unable to load invoice details.</p>
           <button
             onClick={onClose}
-            disabled={isSubmitting}
-            className="flex-1 min-h-[48px] px-6 bg-charcoal border border-gold/20 text-champagne rounded-xl font-semibold hover:bg-charcoal/80 transition-colors disabled:opacity-50 active:scale-[0.99]"
+            className="min-h-[44px] px-6 py-2 rounded-xl font-semibold transition-all duration-200 active:scale-95"
+            style={{
+              background: SALON_LUXE_COLORS.gold,
+              color: SALON_LUXE_COLORS.charcoal
+            }}
+          >
+            Close
+          </button>
+        </div>
+      </SalonLuxeModal>
+    )
+  }
+
+  // ============================================================================
+  // RENDER
+  // ============================================================================
+
+  return (
+    <SalonLuxeModal isOpen={isOpen} onClose={handleClose} size="lg">
+      <div className="p-6 space-y-6">
+        {/* Header */}
+        <div className="text-center">
+          <div 
+            className="w-16 h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center"
+            style={{ 
+              background: `linear-gradient(135deg, ${SALON_LUXE_COLORS.gold}20, ${SALON_LUXE_COLORS.champagne}10)`,
+              border: `1px solid ${SALON_LUXE_COLORS.gold}30`
+            }}
+          >
+            <CreditCard className="w-8 h-8" style={{ color: SALON_LUXE_COLORS.gold }} />
+          </div>
+          <h2 className="text-2xl font-bold text-champagne mb-2">Record Payment</h2>
+          <p className="text-bronze">
+            Invoice #{invoice.invoice_number} • {invoice.customer_name}
+          </p>
+        </div>
+
+        {/* Outstanding Balance Card */}
+        <div 
+          className="p-4 rounded-xl"
+          style={{ 
+            background: `linear-gradient(135deg, ${SALON_LUXE_COLORS.charcoal}50, ${SALON_LUXE_COLORS.charcoal}30)`,
+            border: `1px solid ${SALON_LUXE_COLORS.bronze}30`
+          }}
+        >
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Building2 className="w-5 h-5" style={{ color: SALON_LUXE_COLORS.bronze }} />
+              <span className="text-bronze font-medium">Outstanding Balance</span>
+            </div>
+            <span className="text-2xl font-bold text-champagne">
+              AED {outstandingBalance.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+            </span>
+          </div>
+        </div>
+
+        {/* Payment Form */}
+        <div className="space-y-4">
+          {/* Payment Amount */}
+          <div>
+            <label className="block text-sm font-medium text-champagne mb-2">
+              Payment Amount (AED)
+            </label>
+            <div className="relative">
+              <DollarSign 
+                className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5"
+                style={{ color: SALON_LUXE_COLORS.bronze }}
+              />
+              <input
+                type="text"
+                value={paymentAmount}
+                onChange={(e) => handlePaymentAmountChange(e.target.value)}
+                placeholder="0.00"
+                className="w-full pl-10 pr-4 py-3 rounded-xl font-medium transition-all duration-200 min-h-[44px]"
+                style={{
+                  background: `${SALON_LUXE_COLORS.charcoal}50`,
+                  border: `1px solid ${SALON_LUXE_COLORS.bronze}30`,
+                  color: SALON_LUXE_COLORS.champagne
+                }}
+              />
+            </div>
+            {paymentAmountNumber > outstandingBalance && (
+              <p className="text-sm mt-1" style={{ color: SALON_LUXE_COLORS.ruby }}>
+                Amount cannot exceed outstanding balance
+              </p>
+            )}
+          </div>
+
+          {/* Payment Method */}
+          <div>
+            <label className="block text-sm font-medium text-champagne mb-2">
+              Payment Method
+            </label>
+            <div className="grid grid-cols-3 gap-2">
+              {[
+                { value: 'cash', label: 'Cash', icon: DollarSign },
+                { value: 'card', label: 'Card', icon: CreditCard },
+                { value: 'bank_transfer', label: 'Bank', icon: Building2 }
+              ].map(({ value, label, icon: Icon }) => (
+                <button
+                  key={value}
+                  onClick={() => setPaymentMethod(value as any)}
+                  className="p-3 rounded-xl text-center transition-all duration-200 active:scale-95 min-h-[44px]"
+                  style={{
+                    background: paymentMethod === value 
+                      ? `${SALON_LUXE_COLORS.gold}30` 
+                      : `${SALON_LUXE_COLORS.charcoal}30`,
+                    border: `1px solid ${paymentMethod === value 
+                      ? SALON_LUXE_COLORS.gold 
+                      : SALON_LUXE_COLORS.bronze}30`,
+                    color: paymentMethod === value 
+                      ? SALON_LUXE_COLORS.gold 
+                      : SALON_LUXE_COLORS.bronze
+                  }}
+                >
+                  <Icon className="w-5 h-5 mx-auto mb-1" />
+                  <span className="text-sm font-medium">{label}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Payment Notes */}
+          <div>
+            <label className="block text-sm font-medium text-champagne mb-2">
+              Notes (Optional)
+            </label>
+            <textarea
+              value={paymentNotes}
+              onChange={(e) => setPaymentNotes(e.target.value)}
+              placeholder="Add payment notes..."
+              rows={3}
+              className="w-full p-3 rounded-xl font-medium transition-all duration-200 resize-none"
+              style={{
+                background: `${SALON_LUXE_COLORS.charcoal}50`,
+                border: `1px solid ${SALON_LUXE_COLORS.bronze}30`,
+                color: SALON_LUXE_COLORS.champagne
+              }}
+            />
+          </div>
+
+          {/* GL Preview Toggle */}
+          <button
+            onClick={() => setShowGLPreview(!showGLPreview)}
+            className="flex items-center gap-2 text-sm font-medium transition-all duration-200 active:scale-95"
+            style={{ color: SALON_LUXE_COLORS.gold }}
+          >
+            {showGLPreview ? (
+              <EyeOff className="w-4 h-4" />
+            ) : (
+              <Eye className="w-4 h-4" />
+            )}
+            {showGLPreview ? 'Hide' : 'Show'} GL Preview
+          </button>
+
+          {/* GL Preview */}
+          {showGLPreview && glEntries.length > 0 && (
+            <div 
+              className="p-4 rounded-xl space-y-3"
+              style={{ 
+                background: `${SALON_LUXE_COLORS.charcoal}30`,
+                border: `1px solid ${SALON_LUXE_COLORS.bronze}30`
+              }}
+            >
+              <h4 className="text-sm font-semibold text-champagne mb-2">
+                General Ledger Entries
+              </h4>
+              {glEntries.map((entry, index) => (
+                <div 
+                  key={index}
+                  className="flex justify-between items-center p-3 rounded-lg"
+                  style={{ background: `${SALON_LUXE_COLORS.charcoal}20` }}
+                >
+                  <div>
+                    <div className="text-sm font-medium text-champagne">
+                      {entry.account} - {entry.account_name}
+                    </div>
+                    <div className="text-xs text-bronze">
+                      {entry.description}
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    {entry.debit > 0 && (
+                      <div className="text-sm font-semibold" style={{ color: SALON_LUXE_COLORS.emerald }}>
+                        DR {entry.debit.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                      </div>
+                    )}
+                    {entry.credit > 0 && (
+                      <div className="text-sm font-semibold" style={{ color: SALON_LUXE_COLORS.ruby }}>
+                        CR {entry.credit.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* New Balance Preview */}
+          {paymentAmountNumber > 0 && (
+            <div 
+              className="p-4 rounded-xl flex items-center justify-between"
+              style={{ 
+                background: `linear-gradient(135deg, ${SALON_LUXE_COLORS.emerald}20, ${SALON_LUXE_COLORS.emerald}10)`,
+                border: `1px solid ${SALON_LUXE_COLORS.emerald}30`
+              }}
+            >
+              <div className="flex items-center gap-3">
+                <CheckCircle className="w-5 h-5" style={{ color: SALON_LUXE_COLORS.emerald }} />
+                <span className="font-medium text-champagne">New Balance After Payment</span>
+              </div>
+              <span className="text-xl font-bold text-champagne">
+                AED {newOutstandingBalance.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+              </span>
+            </div>
+          )}
+        </div>
+
+        {/* Actions */}
+        <div className="flex gap-3 pt-4">
+          <button
+            onClick={handleClose}
+            disabled={isRecordingPayment}
+            className="flex-1 min-h-[44px] px-6 py-3 rounded-xl font-semibold transition-all duration-200 active:scale-95"
+            style={{
+              background: `${SALON_LUXE_COLORS.charcoal}60`,
+              border: `1px solid ${SALON_LUXE_COLORS.bronze}30`,
+              color: SALON_LUXE_COLORS.bronze
+            }}
           >
             Cancel
           </button>
           <button
-            onClick={handleSubmit}
-            disabled={!isValid || isSubmitting}
-            className="flex-1 min-h-[48px] px-6 bg-gradient-to-r from-green-500 to-blue-500 text-white rounded-xl font-bold hover:shadow-lg hover:shadow-green-500/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.99]"
+            onClick={handleRecordPayment}
+            disabled={!paymentAmountNumber || paymentAmountNumber > outstandingBalance || isRecordingPayment}
+            className="flex-1 min-h-[44px] px-6 py-3 rounded-xl font-semibold transition-all duration-200 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+            style={{
+              background: SALON_LUXE_COLORS.gold,
+              color: SALON_LUXE_COLORS.charcoal
+            }}
           >
-            {isSubmitting ? 'Recording Payment...' : 'Record Payment'}
+            {isRecordingPayment ? (
+              <div className="flex items-center justify-center gap-2">
+                <div className="animate-spin rounded-full h-4 w-4 border-2 border-charcoal border-t-transparent" />
+                Recording...
+              </div>
+            ) : (
+              `Record Payment • AED ${paymentAmountNumber.toLocaleString('en-US', { minimumFractionDigits: 2 })}`
+            )}
           </button>
         </div>
       </div>
