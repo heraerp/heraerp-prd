@@ -1,4 +1,6 @@
 
+'use client'
+
 import React, { useState } from 'react'
 /**
  * ================================================================================
@@ -17,8 +19,6 @@ import React, { useState } from 'react'
  * Enterprise-grade interface with real-time updates
  * ================================================================================
  */
-
-'use client'
 
 import { 
   Building2, 

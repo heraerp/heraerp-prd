@@ -1,4 +1,6 @@
 
+'use client'
+
 import React, { useEffect, useState } from 'react'
 /**
  * ================================================================================
@@ -17,8 +19,6 @@ import React, { useEffect, useState } from 'react'
  * Second-layer navigation with organization-focused workflows
  * ================================================================================
  */
-
-'use client'
 
 import { 
   Building2,

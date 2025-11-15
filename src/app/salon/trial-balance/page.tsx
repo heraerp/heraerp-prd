@@ -1,14 +1,12 @@
-import React, { useState } from 'react'
+'use client'
+
+import React, { useState, useEffect } from 'react'
 /**
  * Salon Trial Balance Report
  *
  * Modern IFRS-compliant Trial Balance with professional formatting,
  * real-time data from HERA Universal API, and salon-specific styling.
  */
-
-'use client'
-
-import { useState, useEffect } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
