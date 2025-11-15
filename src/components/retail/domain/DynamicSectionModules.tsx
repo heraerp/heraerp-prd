@@ -432,7 +432,7 @@ export default function DynamicSectionModules({
               </p>
               <Button variant="outline" onClick={onRefresh}>
                 <RefreshCw className="w-4 h-4 mr-2" />
-                Check Again
+                Refresh Data
               </Button>
             </div>
           )}
