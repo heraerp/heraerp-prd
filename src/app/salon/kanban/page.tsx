@@ -66,7 +66,6 @@ import { KanbanCard, KanbanStatus } from '@/schemas/kanban'
 import { getNextAllowedStates } from '@/lib/salon/kanbanLifecycleRules'
 import { useBranchFilter } from '@/hooks/useBranchFilter'
 import { useSecuredSalonContext } from '@/app/salon/SecuredSalonProvider'
-import { useMemo } from 'react'
 
 // Luxury color palette
 const LUXE_COLORS = {

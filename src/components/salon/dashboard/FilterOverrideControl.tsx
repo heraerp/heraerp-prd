@@ -1,4 +1,6 @@
 
+'use client'
+
 import React from 'react'
 /**
  * 🎛️ FILTER OVERRIDE CONTROL COMPONENT
@@ -17,8 +19,6 @@ import React from 'react'
  *   label="Revenue Period"
  * />
  */
-
-'use client'
 
 import { RotateCcw, Info } from 'lucide-react'
 import { LUXE_COLORS } from '@/lib/constants/salon'
