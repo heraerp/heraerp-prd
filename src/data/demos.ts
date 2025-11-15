@@ -27,17 +27,6 @@ export const DEMOS: Demo[] = [
     buildHref: '/pricing-request?solution=salon'
   },
   {
-    slug: 'isp',
-    name: 'ISP & Telecom',
-    tagline: 'Complete ISP business suite.',
-    bullets: ['Subscriber Management', 'Billing & Invoicing', 'Network Monitoring'],
-    actives: 'Live Demo',
-    revenue: 'Enterprise Ready',
-    setup: 'Fast Launch',
-    demoHref: '/demo?solution=isp',
-    buildHref: '/pricing-request?solution=isp'
-  },
-  {
     slug: 'crm',
     name: 'Universal CRM',
     tagline: 'Intelligent customer management.',

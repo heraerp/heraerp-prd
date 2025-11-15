@@ -20,15 +20,6 @@ export const SOLUTIONS: Solution[] = [
     smart_code: 'HERA.ERP.SOLUTION.CARD.SALON.V1'
   },
   {
-    slug: 'isp',
-    name: 'ISP Operations',
-    tagline: 'Provisioning, tickets, billing and field ops on a single pane.',
-    bullets: ['Plans & billing', 'Ticketing', 'Network inventory'],
-    demoHref: '/demo?solution=isp',
-    bookHref: '/book-a-meeting?solution=isp',
-    smart_code: 'HERA.ERP.SOLUTION.CARD.ISP.V1'
-  },
-  {
     slug: 'crm',
     name: 'CRM',
     tagline: "Pipeline, accounts and activities you'll actually keep up-to-date.",

@@ -4,7 +4,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
-import '@/app/isp/isp-progress.css'
+// Removed ISP progress CSS - demo app deleted
 
 // Configure NProgress
 if (typeof window !== 'undefined') {

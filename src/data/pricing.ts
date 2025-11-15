@@ -1,8 +1,7 @@
-export type PricingModule = 'Salon' | 'ISP' | 'CRM' | 'CivicFlow' | 'Finance'
+export type PricingModule = 'Salon' | 'CRM' | 'CivicFlow' | 'Finance'
 
 export const PRICING_MODULES: { key: PricingModule; label: string; desc: string }[] = [
   { key: 'Salon', label: 'Salon', desc: 'Appointments, POS, inventory' },
-  { key: 'ISP', label: 'ISP', desc: 'Provisioning, tickets, billing' },
   { key: 'CRM', label: 'CRM', desc: 'Pipeline, accounts, activities' },
   { key: 'CivicFlow', label: 'CivicFlow', desc: 'Grants, reviews, outcomes' },
   { key: 'Finance', label: 'Finance', desc: 'AP/AR, journals, reporting' }

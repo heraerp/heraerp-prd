@@ -27,7 +27,21 @@ import {
 } from 'lucide-react'
 import { useSecuredSalonContext } from '../SecuredSalonProvider'
 import { UniversalReportEngine } from '@/lib/dna/urp/report-engine'
-import type { GLAccountNode } from '@/lib/furniture/chart-of-accounts-service'
+// Define GLAccountNode type locally since furniture library was removed
+interface GLAccountNode {
+  id: string
+  entity_code: string
+  entity_name: string
+  entity_type: string
+  metadata: any
+  organization_id: string
+  level: number
+  debit_total: number
+  credit_total: number
+  current_balance: number
+  balance_type: 'Dr' | 'Cr'
+  children?: GLAccountNode[]
+}
 import { cn } from '@/lib/utils'
 
 export default function SalonChartOfAccounts() {
