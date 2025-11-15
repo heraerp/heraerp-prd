@@ -168,6 +168,14 @@ export const UNIVERSAL_CONFIG = {
       icon: { name: 'Sprout' },
       color: 'green',
       sections: ['dashboard', 'production', 'quality', 'inventory', 'farmers']
+    },
+    {
+      id: 'wms',
+      name: 'Warehouse Management',
+      description: 'Warehouse operations and inventory management',
+      icon: { name: 'Warehouse' },
+      color: 'blue',
+      sections: ['inventory', 'receiving', 'shipping', 'picking', 'analytics']
     }
   ] as UniversalDomain[],
 
@@ -189,7 +197,7 @@ export const UNIVERSAL_CONFIG = {
       icon: { name: 'Package' },
       color: 'indigo',
       workspaces: ['main', 'receiving', 'dispatch'],
-      domains: ['retail', 'wholesale', 'manufacturing']
+      domains: ['retail', 'wholesale', 'manufacturing', 'wms']
     },
     {
       id: 'merchandising',
@@ -246,7 +254,7 @@ export const UNIVERSAL_CONFIG = {
       icon: { name: 'BarChart3' },
       color: 'violet',
       workspaces: ['main', 'dashboards', 'reports'],
-      domains: ['retail', 'wholesale', 'finance', 'manufacturing', 'crm']
+      domains: ['retail', 'wholesale', 'finance', 'manufacturing', 'crm', 'wms']
     },
     // Missing sections - Admin
     {
@@ -452,6 +460,34 @@ export const UNIVERSAL_CONFIG = {
       color: 'emerald',
       workspaces: ['procurement', 'payments'],
       domains: ['agro']
+    },
+    // WMS sections
+    {
+      id: 'receiving',
+      name: 'Receiving',
+      description: 'Inbound goods processing and receiving operations',
+      icon: { name: 'TruckIcon' },
+      color: 'blue',
+      workspaces: ['main', 'receiving', 'quality'],
+      domains: ['wms']
+    },
+    {
+      id: 'shipping',
+      name: 'Shipping',
+      description: 'Outbound processing and shipping operations',
+      icon: { name: 'Send' },
+      color: 'green',
+      workspaces: ['main', 'shipping', 'dispatch'],
+      domains: ['wms']
+    },
+    {
+      id: 'picking',
+      name: 'Picking & Fulfillment',
+      description: 'Order picking and fulfillment operations',
+      icon: { name: 'ClipboardList' },
+      color: 'orange',
+      workspaces: ['main', 'picking', 'fulfillment'],
+      domains: ['wms']
     }
   ] as UniversalSection[],
 
@@ -466,7 +502,7 @@ export const UNIVERSAL_CONFIG = {
       visibleRoles: ['manager', 'admin', 'operator'],
       defaultNav: 'master-data',
       sections: ['pos', 'inventory', 'ordering', 'accounting', 'dashboard'],
-      domains: ['retail', 'wholesale', 'finance', 'manufacturing', 'crm', 'agro']
+      domains: ['retail', 'wholesale', 'finance', 'manufacturing', 'crm', 'agro', 'wms']
     },
     {
       id: 'mobile',

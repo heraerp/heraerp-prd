@@ -144,6 +144,17 @@ const nextConfig = {
         source: '/apps/wholesale/:path*',
         destination: '/wholesale/:path*',
         permanent: true
+      },
+      // WMS redirects to existing inventory domain
+      {
+        source: '/wms',
+        destination: '/inventory',
+        permanent: false
+      },
+      {
+        source: '/wms/:path*',
+        destination: '/inventory/:path*',
+        permanent: false
       }
     ]
   },

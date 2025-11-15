@@ -53,7 +53,7 @@ INSERT INTO core_dynamic_data (
     created_at,
     updated_at
 )
-SELECT 
+SELECT
     gen_random_uuid(),
     e.id,
     'tile_config',
@@ -164,7 +164,7 @@ INSERT INTO core_dynamic_data (
     created_at,
     updated_at
 )
-SELECT 
+SELECT
     gen_random_uuid(),
     e.id,
     'tile_config',
@@ -279,7 +279,7 @@ INSERT INTO core_dynamic_data (
     created_at,
     updated_at
 )
-SELECT 
+SELECT
     gen_random_uuid(),
     e.id,
     'tile_config',
@@ -392,7 +392,7 @@ INSERT INTO core_dynamic_data (
     created_at,
     updated_at
 )
-SELECT 
+SELECT
     gen_random_uuid(),
     e.id,
     'tile_config',
@@ -503,7 +503,7 @@ INSERT INTO core_dynamic_data (
     created_at,
     updated_at
 )
-SELECT 
+SELECT
     gen_random_uuid(),
     e.id,
     'tile_config',
@@ -545,7 +545,7 @@ SELECT
         "actions": [
             {
                 "action_id": "create_invoice",
-                "label": "New Invoice", 
+                "label": "New Invoice",
                 "icon": "Plus",
                 "route": "/finance/ar/invoice/new",
                 "permission": "AR_CREATE"
@@ -615,7 +615,7 @@ INSERT INTO core_dynamic_data (
     created_at,
     updated_at
 )
-SELECT 
+SELECT
     gen_random_uuid(),
     e.id,
     'tile_config',
@@ -726,7 +726,7 @@ INSERT INTO core_dynamic_data (
     created_at,
     updated_at
 )
-SELECT 
+SELECT
     gen_random_uuid(),
     e.id,
     'tile_config',
@@ -838,7 +838,7 @@ INSERT INTO core_dynamic_data (
     created_at,
     updated_at
 )
-SELECT 
+SELECT
     gen_random_uuid(),
     e.id,
     'tile_config',
@@ -949,7 +949,7 @@ INSERT INTO core_dynamic_data (
     created_at,
     updated_at
 )
-SELECT 
+SELECT
     gen_random_uuid(),
     e.id,
     'tile_config',
@@ -1059,7 +1059,7 @@ INSERT INTO core_dynamic_data (
     created_at,
     updated_at
 )
-SELECT 
+SELECT
     gen_random_uuid(),
     e.id,
     'tile_config',
@@ -1171,7 +1171,7 @@ INSERT INTO core_dynamic_data (
     created_at,
     updated_at
 )
-SELECT 
+SELECT
     gen_random_uuid(),
     e.id,
     'tile_config',
@@ -1283,7 +1283,7 @@ INSERT INTO core_dynamic_data (
     created_at,
     updated_at
 )
-SELECT 
+SELECT
     gen_random_uuid(),
     e.id,
     'tile_config',
@@ -1398,7 +1398,7 @@ INSERT INTO core_dynamic_data (
     created_at,
     updated_at
 )
-SELECT 
+SELECT
     gen_random_uuid(),
     e.id,
     'tile_config',
@@ -1474,7 +1474,7 @@ RETURNS TABLE(
 ) AS $$
 BEGIN
     RETURN QUERY
-    SELECT 
+    SELECT
         e.entity_code,
         e.entity_name,
         (dd.field_value_json->>'category')::TEXT,
@@ -1489,7 +1489,7 @@ BEGIN
     AND e.organization_id = '00000000-0000-0000-0000-000000000000'
     AND dd.field_name = 'tile_config'
     AND e.status = 'active'
-    ORDER BY 
+    ORDER BY
         CASE (dd.field_value_json->>'category')::TEXT
             WHEN 'General Ledger' THEN 1
             WHEN 'Accounts Payable' THEN 2
@@ -1660,14 +1660,16 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 -- ================================================================================
 
 -- Index for tile template lookups
-CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_finance_tile_templates
+-- Index for tile template lookups
+CREATE INDEX IF NOT EXISTS idx_finance_tile_templates
 ON core_entities (entity_type, organization_id, status)
 WHERE entity_type = 'APP_TILE_TEMPLATE';
 
 -- Index for tile configuration data
-CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_finance_tile_config
+CREATE INDEX IF NOT EXISTS idx_finance_tile_config
 ON core_dynamic_data (entity_id, field_name)
 WHERE field_name = 'tile_config';
+
 
 -- ================================================================================
 -- VERIFICATION AND ROLLBACK
@@ -1693,7 +1695,7 @@ BEGIN
         'Tax & Compliance', 'Treasury'
     )
     AND e.status = 'active';
-    
+
     -- Count advanced tiles
     SELECT COUNT(*) INTO v_advanced_tiles_count
     FROM core_entities e
@@ -1703,14 +1705,14 @@ BEGIN
     AND dd.field_name = 'tile_config'
     AND (dd.field_value_json->>'category')::TEXT = 'Management Accounting'
     AND e.status = 'active';
-    
+
     -- Count helper functions
     SELECT COUNT(*) INTO v_function_count
     FROM pg_proc p
     JOIN pg_namespace n ON n.oid = p.pronamespace
     WHERE n.nspname = 'public'
     AND p.proname LIKE 'hera_finance_%tile%';
-    
+
     RAISE NOTICE 'HERA Finance Tile Templates v2.2 Migration Complete:';
     RAISE NOTICE '  - Core finance tiles: % (expected: 12)', v_core_tiles_count;
     RAISE NOTICE '  - Advanced tiles: % (expected: 1+)', v_advanced_tiles_count;
@@ -1747,15 +1749,15 @@ DROP INDEX IF EXISTS idx_finance_tile_templates;
 DROP INDEX IF EXISTS idx_finance_tile_config;
 
 -- 3. Remove tile configurations
-DELETE FROM core_dynamic_data 
+DELETE FROM core_dynamic_data
 WHERE entity_id IN (
-    SELECT id FROM core_entities 
+    SELECT id FROM core_entities
     WHERE entity_type = 'APP_TILE_TEMPLATE'
     AND organization_id = '00000000-0000-0000-0000-000000000000'
 );
 
 -- 4. Remove tile templates
-DELETE FROM core_entities 
+DELETE FROM core_entities
 WHERE entity_type = 'APP_TILE_TEMPLATE'
 AND organization_id = '00000000-0000-0000-0000-000000000000';
 */

@@ -619,6 +619,70 @@ function getMockData(domainSlug: string) {
             order: 4
           }
         ]
+      },
+      wms: {
+        domain: {
+          id: 'warehouse-management',
+          entity_name: 'Warehouse Management System',
+          entity_code: 'WMS',
+          slug: 'wms',
+          subtitle: 'Inventory & Warehouse Operations',
+          color: '#0891B2'
+        },
+        sections: [
+          {
+            id: 'wms-inventory',
+            entity_name: 'Inventory Management',
+            entity_code: 'INVENTORY',
+            slug: 'inventory',
+            subtitle: 'Stock levels & warehouse operations',
+            icon: 'package',
+            color: '#059669',
+            persona_label: 'Warehouse Manager',
+            visible_roles: ['warehouse_manager'],
+            route: '/wms/inventory',
+            order: 1
+          },
+          {
+            id: 'wms-receiving',
+            entity_name: 'Receiving Operations',
+            entity_code: 'RECEIVING',
+            slug: 'receiving',
+            subtitle: 'Inbound goods processing',
+            icon: 'truck',
+            color: '#0EA5E9',
+            persona_label: 'Receiving Clerk',
+            visible_roles: ['receiving_clerk'],
+            route: '/wms/receiving',
+            order: 2
+          },
+          {
+            id: 'wms-shipping',
+            entity_name: 'Shipping Operations',
+            entity_code: 'SHIPPING',
+            slug: 'shipping',
+            subtitle: 'Outbound order fulfillment',
+            icon: 'send',
+            color: '#7C3AED',
+            persona_label: 'Shipping Coordinator',
+            visible_roles: ['shipping_coordinator'],
+            route: '/wms/shipping',
+            order: 3
+          },
+          {
+            id: 'wms-picking',
+            entity_name: 'Picking & Fulfillment',
+            entity_code: 'PICKING',
+            slug: 'picking',
+            subtitle: 'Order picking operations',
+            icon: 'clipboard-list',
+            color: '#DC2626',
+            persona_label: 'Picker',
+            visible_roles: ['picker'],
+            route: '/wms/picking',
+            order: 4
+          }
+        ]
       }
     }
 

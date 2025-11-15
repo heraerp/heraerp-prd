@@ -6,7 +6,17 @@
  * Eliminates hardcoded route mappings through pattern-based matching
  */
 
-import { WMSEntityTypes } from '@/config/waste-management-config'
+// WMS Entity Types - configured inline for now
+const WMSEntityTypes = {
+  WAREHOUSE: 'WAREHOUSE',
+  LOCATION: 'LOCATION',
+  INVENTORY_ITEM: 'INVENTORY_ITEM',
+  RECEIVING_ORDER: 'RECEIVING_ORDER',
+  SHIPPING_ORDER: 'SHIPPING_ORDER',
+  PICK_LIST: 'PICK_LIST',
+  STOCK_ADJUSTMENT: 'STOCK_ADJUSTMENT',
+  CYCLE_COUNT: 'CYCLE_COUNT'
+}
 
 // Define universal route patterns
 interface RoutePattern {

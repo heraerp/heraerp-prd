@@ -69,7 +69,20 @@ import {
   RefreshCw,
   Clock,
   Target,
-  Zap
+  Zap,
+  TruckIcon,
+  Send,
+  ClipboardList,
+  Sprout,
+  CheckCircle,
+  FlaskConical,
+  MapPin,
+  Brain,
+  PackageCheck,
+  ArrowRightLeft,
+  RotateCcw,
+  Undo2,
+  Edit
 } from 'lucide-react'
 import { resolveUniversalConfig, generateUniversalSmartCode, generateUniversalBreadcrumbs, UNIVERSAL_CONFIG } from '@/lib/universal/config'
 
@@ -125,7 +138,21 @@ const iconMap = {
   'Building2': Building2,
   'Target': Target,
   'Clock': Clock,
-  'Zap': Zap
+  'Zap': Zap,
+  'TruckIcon': TruckIcon,
+  'Send': Send,
+  'ClipboardList': ClipboardList,
+  'Sprout': Sprout,
+  'CheckCircle': CheckCircle,
+  'FlaskConical': FlaskConical,
+  'MapPin': MapPin,
+  'Brain': Brain,
+  'PackageCheck': PackageCheck,
+  'ArrowDown': ArrowDown,
+  'ArrowRightLeft': ArrowRightLeft,
+  'RotateCcw': RotateCcw,
+  'Undo2': Undo2,
+  'Edit': Edit
 }
 
 export default function UniversalSectionPage() {

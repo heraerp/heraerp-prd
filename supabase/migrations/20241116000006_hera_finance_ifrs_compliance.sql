@@ -144,7 +144,7 @@ INSERT INTO core_dynamic_data (
     created_at,
     updated_at
 )
-SELECT 
+SELECT
     gen_random_uuid(),
     e.id,
     'policy_config',
@@ -156,7 +156,7 @@ SELECT
         "requirements": {
             "initial_recognition": {
                 "transaction_currency": "required",
-                "functional_currency": "required", 
+                "functional_currency": "required",
                 "exchange_rate": "spot_rate_transaction_date",
                 "validation": "mandatory"
             },
@@ -182,7 +182,7 @@ SELECT
                 "severity": "error"
             },
             {
-                "rule_id": "IAS21_002", 
+                "rule_id": "IAS21_002",
                 "description": "Exchange rate must be positive",
                 "condition": "transaction.exchange_rate > 0",
                 "severity": "error"
@@ -212,8 +212,8 @@ SELECT
     '00000000-0000-0000-0000-000000000001',
     NOW(),
     NOW()
-FROM core_entities e 
-WHERE e.entity_code = 'IAS_21_FOREIGN_CURRENCY' 
+FROM core_entities e
+WHERE e.entity_code = 'IAS_21_FOREIGN_CURRENCY'
 AND e.organization_id = '00000000-0000-0000-0000-000000000000';
 
 -- ================================================================================
@@ -263,7 +263,7 @@ INSERT INTO core_dynamic_data (
     created_at,
     updated_at
 )
-SELECT 
+SELECT
     gen_random_uuid(),
     e.id,
     'policy_config',
@@ -337,8 +337,8 @@ SELECT
     '00000000-0000-0000-0000-000000000001',
     NOW(),
     NOW()
-FROM core_entities e 
-WHERE e.entity_code = 'IFRS_8_OPERATING_SEGMENTS' 
+FROM core_entities e
+WHERE e.entity_code = 'IFRS_8_OPERATING_SEGMENTS'
 AND e.organization_id = '00000000-0000-0000-0000-000000000000';
 
 -- ================================================================================
@@ -388,7 +388,7 @@ INSERT INTO core_dynamic_data (
     created_at,
     updated_at
 )
-SELECT 
+SELECT
     gen_random_uuid(),
     e.id,
     'policy_config',
@@ -495,8 +495,8 @@ SELECT
     '00000000-0000-0000-0000-000000000001',
     NOW(),
     NOW()
-FROM core_entities e 
-WHERE e.entity_code = 'IFRS_15_REVENUE_RECOGNITION' 
+FROM core_entities e
+WHERE e.entity_code = 'IFRS_15_REVENUE_RECOGNITION'
 AND e.organization_id = '00000000-0000-0000-0000-000000000000';
 
 -- ================================================================================
@@ -546,7 +546,7 @@ INSERT INTO core_dynamic_data (
     created_at,
     updated_at
 )
-SELECT 
+SELECT
     gen_random_uuid(),
     e.id,
     'policy_config',
@@ -661,8 +661,8 @@ SELECT
     '00000000-0000-0000-0000-000000000001',
     NOW(),
     NOW()
-FROM core_entities e 
-WHERE e.entity_code = 'IFRS_16_LEASES' 
+FROM core_entities e
+WHERE e.entity_code = 'IFRS_16_LEASES'
 AND e.organization_id = '00000000-0000-0000-0000-000000000000';
 
 -- ================================================================================
@@ -705,13 +705,13 @@ BEGIN
     -- If specific transaction validation requested
     IF p_transaction_id IS NOT NULL THEN
         -- Get transaction details
-        SELECT t.*, 
-               ut.transaction_type, ut.transaction_data, 
+        SELECT t.*,
+               ut.transaction_type, ut.transaction_data,
                ut.source_entity_id, ut.target_entity_id
         INTO v_transaction
         FROM universal_transactions ut
         JOIN core_entities t ON t.id = ut.id
-        WHERE ut.id = p_transaction_id 
+        WHERE ut.id = p_transaction_id
         AND ut.organization_id = p_organization_id;
 
         IF NOT FOUND THEN
@@ -728,7 +728,7 @@ BEGIN
         SELECT *
         INTO v_entity
         FROM core_entities
-        WHERE id = p_entity_id 
+        WHERE id = p_entity_id
         AND organization_id = p_organization_id;
 
         IF NOT FOUND THEN
@@ -752,7 +752,7 @@ BEGIN
 
         -- Apply IAS 21 validation rules
         IF v_policy_config IS NOT NULL THEN
-            FOR v_validation_rule IN 
+            FOR v_validation_rule IN
                 SELECT * FROM jsonb_array_elements(v_policy_config->'validation_rules')
             LOOP
                 -- Simplified rule evaluation (production would need full expression parser)
@@ -760,7 +760,7 @@ BEGIN
                     WHEN 'IAS21_001' THEN
                         -- Check currency code validation
                         IF v_transaction IS NOT NULL THEN
-                            IF (v_transaction.transaction_data->>'currency') IS NULL OR 
+                            IF (v_transaction.transaction_data->>'currency') IS NULL OR
                                LENGTH(v_transaction.transaction_data->>'currency') != 3 THEN
                                 v_violations := v_violations || jsonb_build_object(
                                     'rule_id', v_validation_rule->>'rule_id',
@@ -790,7 +790,7 @@ BEGIN
 
     -- Validate against IFRS 8 (Operating Segments) if applicable
     IF p_validation_scope IN ('ALL', 'IFRS_8') THEN
-        -- Get IFRS 8 policy configuration  
+        -- Get IFRS 8 policy configuration
         SELECT cdd.field_value_json
         INTO v_policy_config
         FROM core_entities ce
@@ -913,13 +913,13 @@ BEGIN
         v_has_violations := (v_validation_result->>'status') = 'violations_found';
 
         -- Store validation result in transaction metadata
-        NEW.transaction_data := COALESCE(NEW.transaction_data, '{}'::JSONB) || 
+        NEW.transaction_data := COALESCE(NEW.transaction_data, '{}'::JSONB) ||
             jsonb_build_object('ifrs_validation', v_validation_result);
 
         -- If critical violations found, could optionally prevent insert
         -- (Enable based on organizational policy)
         IF v_has_violations AND (v_validation_result->'options'->>'strict_mode')::BOOLEAN IS TRUE THEN
-            RAISE EXCEPTION 'IFRS compliance violations prevent transaction: %', 
+            RAISE EXCEPTION 'IFRS compliance violations prevent transaction: %',
                 v_validation_result->'violations';
         END IF;
     END IF;
@@ -938,15 +938,15 @@ $function$;
 -- ================================================================================
 
 -- Ensure indexes exist for IFRS compliance queries
-CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_core_entities_ifrs_policy 
-ON core_entities (organization_id, entity_type, entity_code) 
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_core_entities_ifrs_policy
+ON core_entities (organization_id, entity_type, entity_code)
 WHERE entity_type IN ('IFRS_POLICY', 'IFRS_VALIDATION', 'IFRS_COMPLIANCE_REPORT');
 
-CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_universal_transactions_ifrs 
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_universal_transactions_ifrs
 ON universal_transactions (organization_id, transaction_type, created_at)
 WHERE transaction_type IN ('GL_JOURNAL', 'AP_INVOICE', 'AR_INVOICE', 'BANK_TRANSACTION', 'FX_REVALUATION');
 
-CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_transaction_data_currency 
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_transaction_data_currency
 ON universal_transactions USING GIN ((transaction_data->'currency'))
 WHERE transaction_data ? 'currency';
 
@@ -960,7 +960,7 @@ DECLARE
     v_policy_count INTEGER;
 BEGIN
     SELECT COUNT(*) INTO v_policy_count
-    FROM core_entities 
+    FROM core_entities
     WHERE entity_type = 'IFRS_POLICY'
     AND entity_code IN ('IAS_21_FOREIGN_CURRENCY', 'IFRS_8_OPERATING_SEGMENTS', 'IFRS_15_REVENUE_RECOGNITION', 'IFRS_16_LEASES')
     AND organization_id = '00000000-0000-0000-0000-000000000000';
